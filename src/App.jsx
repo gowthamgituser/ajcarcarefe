@@ -1,10 +1,33 @@
-import './App.css';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { store } from './redux/store';
+import Dashboard from './components/dashboard';
+import { Provider } from 'react-redux';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   return (
-    <div className="rotate-container">
-      <h1 className="rotating">Aj Car Care Coming Soon</h1>
-    </div>
+    <Provider store={store}>
+        <BrowserRouter>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                  <Dashboard/>
+              }
+            />
+            {/* Add more routes as needed */}
+          </Routes>
+          <ToastContainer
+          position="bottom-center"
+          autoClose={4000}
+          hideProgressBar={false}
+          closeOnClick
+          pauseOnHover
+          draggable
+          theme="colored"
+        />
+        </BrowserRouter>
+    </Provider>
   );
 }
 
