@@ -15,6 +15,20 @@ export const fetchApartments = createAsyncThunk(
       }
     }
   );
+
+  export const getApartment = createAsyncThunk(
+    'apartment/getApartments',
+    async (id, { rejectWithValue }) => {
+      try {
+        const res = await API.get(`apartments/${id}`);
+        return res.data;
+      } catch (error) {
+        const message =
+          error.response?.data?.error || error.message || 'Something went wrong';
+        return rejectWithValue(message);
+      }
+    }
+  );
   
   export const deleteApartment = createAsyncThunk(
     'apartment/deleteApartment',
@@ -51,9 +65,9 @@ export const addApartment = createAsyncThunk(
 
 export const updateApartment = createAsyncThunk(
     'apartment/updateApartment',
-    async (payload, { dispatch, rejectWithValue }) => {
+    async ({payload, id}, { dispatch, rejectWithValue }) => {
         try {
-            await API.put('apartments', payload);
+            await API.put(`apartments/${id}`, payload);
             dispatch(fetchApartments());
             toast.success('Apartment added');
         } catch (err) {

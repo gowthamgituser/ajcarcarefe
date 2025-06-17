@@ -1,0 +1,279 @@
+import React, { useEffect, useState } from 'react';
+import {
+  Modal,
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Grid,
+  Divider,
+  IconButton,
+} from '@mui/material';
+import { CloseOutlined } from '@mui/icons-material';
+import { useDispatch } from 'react-redux';
+import { addApartment, updateApartment } from '../../redux/actions/apartment';
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '80%',
+  maxWidth: 600,
+  maxHeight: '100vh',
+  overflowY: 'auto',
+  bgcolor: 'background.paper',
+  borderRadius: 2,
+  boxShadow: 24,
+  p: { xs: 1, sm: 2 },
+};
+
+const AddApartmentModal = ({ open, handleClose, data, editModal }) => {
+
+  const [errors, setErrors] = useState({});
+  const dispatch = useDispatch();
+  const [formData, setFormData] = useState({
+    name: '',
+    address: '',
+    additionalWashRates: {
+      car: { foam: '', normal: '' },
+      bike: { foam: '', normal: '' },
+    },
+  });
+
+  useEffect(() => {
+    if (editModal && data) {
+      setFormData({
+        name: data.name || '',
+        address: data.address || '',
+        additionalWashRates: data.additionalWashRates || {
+          car: { foam: '', normal: '' },
+          bike: { foam: '', normal: '' },
+        },
+      });
+    }
+  }, [editModal, data]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleNestedChange = (type, washType, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      additionalWashRates: {
+        ...prev.additionalWashRates,
+        [type]: {
+          ...prev.additionalWashRates[type],
+          [washType]: value,
+        },
+      },
+    }));
+  };
+
+  const validate = () => {
+    const newErrors = {};
+    if (!formData.name.trim()) newErrors.name = 'Name is required';
+    if (!formData.address.trim()) newErrors.address = 'Address is required';
+    return newErrors;
+  };
+
+  const handleSubmit = () => {
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    if (editModal) {
+      const postBody = formData;
+      dispatch(updateApartment({ payload: postBody, id: data?._id }));
+    } else {
+      const postBody = formData;
+      dispatch(addApartment(postBody));
+    }
+
+    handleClose();
+    setFormData({
+      name: '',
+      address: '',
+      additionalWashRates: {
+        car: { foam: '', normal: '' },
+        bike: { foam: '', normal: '' },
+      },
+    });
+    setErrors({});
+  };
+
+  return (
+    <Modal open={open} onClose={handleClose}>
+      <Box sx={style}>
+        <Box style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Typography variant="h5" style={{ fontFamily: 'cursive' }} mb={3}>
+            {editModal ? 'Edit Apartment' : 'Add Apartment'}
+          </Typography>
+          <IconButton onClick={handleClose}>
+            <CloseOutlined />
+          </IconButton>
+        </Box>
+
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <Typography fontWeight={500}>Name</Typography>
+            <TextField
+              fullWidth
+              margin="dense"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              error={!!errors.name}
+              helperText={errors.name}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <Typography fontWeight={500}>Address</Typography>
+            <TextField
+              fullWidth
+              margin="dense"
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              error={!!errors.address}
+              helperText={errors.address}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <Typography fontWeight={600} mt={2}>
+              Additional Wash Rates
+            </Typography>
+            <Divider sx={{ mb: 1 }} />
+
+            {/* Car */}
+            <Typography fontWeight={500}>Car</Typography>
+            <Grid container spacing={1}>
+              <Grid item xs={6}>
+                <TextField
+                  fullWidth
+                  label="Foam Rate"
+                  type="number"
+                  value={formData.additionalWashRates.car.foam}
+                  onChange={(e) => handleNestedChange('car', 'foam', e.target.value)}
+                  error={!!errors.carFoam}
+                  helperText={errors.carFoam}
+                  sx={{
+                    '& input[type=number]': {
+                      MozAppearance: 'textfield',
+                    },
+                    '& input[type=number]::-webkit-outer-spin-button': {
+                      WebkitAppearance: 'none',
+                      margin: 0,
+                    },
+                    '& input[type=number]::-webkit-inner-spin-button': {
+                      WebkitAppearance: 'none',
+                      margin: 0,
+                    },
+                  }}
+                />
+
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  fullWidth
+                  label="Normal Rate"
+                  type="number"
+                  value={formData.additionalWashRates.car.normal}
+                  onChange={(e) => handleNestedChange('car', 'normal', e.target.value)}
+                  error={!!errors.carNormal}
+                  helperText={errors.carNormal}
+                  sx={{
+                    '& input[type=number]': {
+                      MozAppearance: 'textfield',
+                    },
+                    '& input[type=number]::-webkit-outer-spin-button': {
+                      WebkitAppearance: 'none',
+                      margin: 0,
+                    },
+                    '& input[type=number]::-webkit-inner-spin-button': {
+                      WebkitAppearance: 'none',
+                      margin: 0,
+                    },
+                  }}
+                />
+              </Grid>
+            </Grid>
+
+            {/* Bike */}
+            <Typography fontWeight={500} mt={2}>
+              Bike
+            </Typography>
+            <Grid container spacing={1}>
+              <Grid item xs={6}>
+                <TextField
+                  fullWidth
+                  label="Foam Rate"
+                  type="number"
+                  sx={{
+                    '& input[type=number]': {
+                      MozAppearance: 'textfield',
+                    },
+                    '& input[type=number]::-webkit-outer-spin-button': {
+                      WebkitAppearance: 'none',
+                      margin: 0,
+                    },
+                    '& input[type=number]::-webkit-inner-spin-button': {
+                      WebkitAppearance: 'none',
+                      margin: 0,
+                    },
+                  }}
+                  value={formData.additionalWashRates.bike.foam}
+                  onChange={(e) => handleNestedChange('bike', 'foam', e.target.value)}
+                  error={!!errors.bikeFoam}
+                  helperText={errors.bikeFoam}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  fullWidth
+                  label="Normal Rate"
+                  type="number"
+                  sx={{
+                    '& input[type=number]': {
+                      MozAppearance: 'textfield',
+                    },
+                    '& input[type=number]::-webkit-outer-spin-button': {
+                      WebkitAppearance: 'none',
+                      margin: 0,
+                    },
+                    '& input[type=number]::-webkit-inner-spin-button': {
+                      WebkitAppearance: 'none',
+                      margin: 0,
+                    },
+                  }}
+                  value={formData.additionalWashRates.bike.normal}
+                  onChange={(e) => handleNestedChange('bike', 'normal', e.target.value)}
+                  error={!!errors.bikeNormal}
+                  helperText={errors.bikeNormal}
+                />
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
+
+        <Box mt={3} display="flex" justifyContent="flex-end" gap={1}>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button variant="contained" color="primary" onClick={handleSubmit}>
+            {editModal ? 'Edit' : 'Add'}
+          </Button>
+        </Box>
+      </Box>
+    </Modal>
+  );
+};
+
+export default AddApartmentModal;
