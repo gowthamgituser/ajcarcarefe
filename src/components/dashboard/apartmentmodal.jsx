@@ -6,7 +6,6 @@ import {
   Button,
   Typography,
   Grid,
-  Divider,
   IconButton,
 } from '@mui/material';
 import { CloseOutlined } from '@mui/icons-material';
@@ -35,10 +34,6 @@ const AddApartmentModal = ({ open, handleClose, data, editModal }) => {
   const [formData, setFormData] = useState({
     name: '',
     address: '',
-    additionalWashRates: {
-      car: { foam: '', normal: '' },
-      bike: { foam: '', normal: '' },
-    },
   });
 
   useEffect(() => {
@@ -46,10 +41,6 @@ const AddApartmentModal = ({ open, handleClose, data, editModal }) => {
       setFormData({
         name: data.name || '',
         address: data.address || '',
-        additionalWashRates: data.additionalWashRates || {
-          car: { foam: '', normal: '' },
-          bike: { foam: '', normal: '' },
-        },
       });
     }
   }, [editModal, data]);
@@ -59,19 +50,6 @@ const AddApartmentModal = ({ open, handleClose, data, editModal }) => {
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }));
-  };
-
-  const handleNestedChange = (type, washType, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      additionalWashRates: {
-        ...prev.additionalWashRates,
-        [type]: {
-          ...prev.additionalWashRates[type],
-          [washType]: value,
-        },
-      },
     }));
   };
 
@@ -101,10 +79,6 @@ const AddApartmentModal = ({ open, handleClose, data, editModal }) => {
     setFormData({
       name: '',
       address: '',
-      additionalWashRates: {
-        car: { foam: '', normal: '' },
-        bike: { foam: '', normal: '' },
-      },
     });
     setErrors({});
   };
@@ -146,122 +120,6 @@ const AddApartmentModal = ({ open, handleClose, data, editModal }) => {
               error={!!errors.address}
               helperText={errors.address}
             />
-          </Grid>
-
-          <Grid item xs={12}>
-            <Typography fontWeight={600} mt={2}>
-              Additional Wash Rates
-            </Typography>
-            <Divider sx={{ mb: 1 }} />
-
-            {/* Car */}
-            <Typography fontWeight={500}>Car</Typography>
-            <Grid container spacing={1}>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  label="Foam Rate"
-                  type="number"
-                  value={formData.additionalWashRates.car.foam}
-                  onChange={(e) => handleNestedChange('car', 'foam', e.target.value)}
-                  error={!!errors.carFoam}
-                  helperText={errors.carFoam}
-                  sx={{
-                    '& input[type=number]': {
-                      MozAppearance: 'textfield',
-                    },
-                    '& input[type=number]::-webkit-outer-spin-button': {
-                      WebkitAppearance: 'none',
-                      margin: 0,
-                    },
-                    '& input[type=number]::-webkit-inner-spin-button': {
-                      WebkitAppearance: 'none',
-                      margin: 0,
-                    },
-                  }}
-                />
-
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  label="Normal Rate"
-                  type="number"
-                  value={formData.additionalWashRates.car.normal}
-                  onChange={(e) => handleNestedChange('car', 'normal', e.target.value)}
-                  error={!!errors.carNormal}
-                  helperText={errors.carNormal}
-                  sx={{
-                    '& input[type=number]': {
-                      MozAppearance: 'textfield',
-                    },
-                    '& input[type=number]::-webkit-outer-spin-button': {
-                      WebkitAppearance: 'none',
-                      margin: 0,
-                    },
-                    '& input[type=number]::-webkit-inner-spin-button': {
-                      WebkitAppearance: 'none',
-                      margin: 0,
-                    },
-                  }}
-                />
-              </Grid>
-            </Grid>
-
-            {/* Bike */}
-            <Typography fontWeight={500} mt={2}>
-              Bike
-            </Typography>
-            <Grid container spacing={1}>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  label="Foam Rate"
-                  type="number"
-                  sx={{
-                    '& input[type=number]': {
-                      MozAppearance: 'textfield',
-                    },
-                    '& input[type=number]::-webkit-outer-spin-button': {
-                      WebkitAppearance: 'none',
-                      margin: 0,
-                    },
-                    '& input[type=number]::-webkit-inner-spin-button': {
-                      WebkitAppearance: 'none',
-                      margin: 0,
-                    },
-                  }}
-                  value={formData.additionalWashRates.bike.foam}
-                  onChange={(e) => handleNestedChange('bike', 'foam', e.target.value)}
-                  error={!!errors.bikeFoam}
-                  helperText={errors.bikeFoam}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  label="Normal Rate"
-                  type="number"
-                  sx={{
-                    '& input[type=number]': {
-                      MozAppearance: 'textfield',
-                    },
-                    '& input[type=number]::-webkit-outer-spin-button': {
-                      WebkitAppearance: 'none',
-                      margin: 0,
-                    },
-                    '& input[type=number]::-webkit-inner-spin-button': {
-                      WebkitAppearance: 'none',
-                      margin: 0,
-                    },
-                  }}
-                  value={formData.additionalWashRates.bike.normal}
-                  onChange={(e) => handleNestedChange('bike', 'normal', e.target.value)}
-                  error={!!errors.bikeNormal}
-                  helperText={errors.bikeNormal}
-                />
-              </Grid>
-            </Grid>
           </Grid>
         </Grid>
 

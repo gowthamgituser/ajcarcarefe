@@ -18,11 +18,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchCustomer } from "../../redux/actions/customers";
 import { useParams } from "react-router-dom";
 import CustomerModal from "./customerModal";
+import CustomerSubscriptionModal from "./customerSubscriptionModal";
 const Customer = () => {
     const dispatch = useDispatch();
     const { list, loading } = useSelector((state) => state.customer);
     const [showModal, setShowModal] = useState({open: false, data: null})
     const [showEditModal, setShowEditModal] = useState({ open: false, data: null });
+    const [showCustomerSubModal, setShowCustomerSubModal] = useState({ open: false, data: null});
 
     const { id } = useParams();
     useEffect(() => {
@@ -86,7 +88,12 @@ const Customer = () => {
                           >
                             <EditNoteOutlined />
                           </IconButton>
-                          <IconButton color="primary" 
+                          <IconButton color="primary" onClick={() => {
+                            setShowCustomerSubModal({
+                              open: true,
+                              data: customer
+                            })
+                          }}
                           >
                             <ManageAccounts />
                           </IconButton>
@@ -116,6 +123,15 @@ const Customer = () => {
               open={showEditModal.open}
               editModal={true}
               handleClose={() => setShowEditModal({ open: false, data: null})}
+            />
+          }
+          {
+            showCustomerSubModal.open && <CustomerSubscriptionModal
+            data={showCustomerSubModal.data}
+            open={showCustomerSubModal.open}
+            handleClose={() => {
+              setShowCustomerSubModal({ open: false, data: null});
+            }}
             />
           }
         </>

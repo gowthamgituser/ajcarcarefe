@@ -1,0 +1,55 @@
+export const columns = (renderActionsCell) =>  [
+    { 
+        field: 'vehicleNumber',
+        headerName: 'Vehicle No.', 
+        editable: true,
+        headerAlign: 'center',
+        align: 'center',
+        width: 130
+    },
+    { 
+        field: 'brand', 
+        headerName: 'Brand', 
+        editable: true ,
+        headerAlign: 'center',
+        align: 'center',
+    },
+    { 
+        field: 'model',
+        headerName: 'Model',
+        editable: true,
+        headerAlign: 'center',
+        align: 'center',
+    },
+    { 
+        field: 'color',
+        headerName: 'Color',
+        editable: true,
+        headerAlign: 'center',
+        align: 'center',
+    },
+    { 
+        field: 'block',
+        headerName: 'Block',
+        editable: true ,
+        headerAlign: 'center',
+        align: 'center',
+    },
+    { 
+        field: 'parkingNumber',
+        headerName: 'Parking No.',
+        editable: true,
+        headerAlign: 'center',
+        align: 'center',
+    },
+    {
+        field: 'actions',
+        headerName: 'Actions',
+        width: 100,
+        renderCell: renderActionsCell,
+        sortable: false,
+        filterable: false,
+        headerAlign: 'center',
+        align: 'center',
+    },
+];

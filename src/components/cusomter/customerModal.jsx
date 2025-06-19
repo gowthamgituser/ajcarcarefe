@@ -6,7 +6,6 @@ import {
     Button,
     Typography,
     Grid,
-    Divider,
     IconButton,
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
