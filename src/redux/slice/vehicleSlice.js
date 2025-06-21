@@ -1,13 +1,14 @@
 // src/redux/apartmentSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-import { fetchVehicles } from '../actions/vehicles';
+import { fetchVehicles, fetchVehiclesByApartment } from '../actions/vehicles';
 
 // Slice
 const vehicleSlice = createSlice({
   name: 'vehicle',
   initialState: {
     list: [],
+    vehicle_apartmentList: [],
     loading: false,
     error: null,
     apartmentData: []
@@ -26,6 +27,19 @@ const vehicleSlice = createSlice({
         state.list = action.payload;
       })
       .addCase(fetchVehicles.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        toast.error(action.payload);
+      })
+      .addCase(fetchVehiclesByApartment.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchVehiclesByApartment.fulfilled, (state, action) => {
+        state.loading = false;
+        state.vehicle_apartmentList = action.payload;
+      })
+      .addCase(fetchVehiclesByApartment.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
         toast.error(action.payload);

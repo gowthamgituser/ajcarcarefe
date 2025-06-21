@@ -2,6 +2,7 @@ import Customer from "../cusomter";
 import NavBar from "../navbar/navbar";
 import { useState } from "react";
 import Plans from "../plans";
+import WashLogs from "../washLog";
 
 // Components for each menu item
 const CarWashLogs = () => <div>Car Wash Logs Component</div>;
@@ -12,7 +13,7 @@ const Invoices = () => <div>Invoices Component</div>;
 const Apartment = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const components = [<CarWashLogs />, <Customer />, <Plans />, <Invoices />];
+  const components = [<WashLogs />, <Customer />, <Plans />, <Invoices />];
 
   return (
     <>

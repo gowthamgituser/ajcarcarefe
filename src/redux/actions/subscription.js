@@ -15,6 +15,20 @@ export const fetchSubscription = createAsyncThunk(
       }
     }
   );
+
+  export const fetchSubscriptionByVehicle = createAsyncThunk(
+    'subscription/fetchSubscriptionByVehicle',
+    async (id, { rejectWithValue }) => {
+      try {
+        const res = await API.get(`subscription/vehicle/${id}`);
+        return res.data;
+      } catch (error) {
+        const message =
+          error.response?.data?.error || error.message || 'Something went wrong';
+        return rejectWithValue(message);
+      }
+    }
+  );
   
   
   export const deleteSubscription = createAsyncThunk(

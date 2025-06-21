@@ -70,8 +70,10 @@ const CustomerSubscriptionModal = ({ open, handleClose, data }) => {
     useEffect(() => {
         if (subscriptionList.length) {
             setSubs(subscriptionList);
+        } else {
+            setSubs([]);
         }
-    }, [subs]);
+    }, [subscriptionList]);
 
     const handleAdd = () => {
         const newRow = {
@@ -238,14 +240,14 @@ const CustomerSubscriptionModal = ({ open, handleClose, data }) => {
 
                                             {/* Quota */}
                                             <TableCell>
-                                                <Typography variant="body2">Foam: {sub?.washQuota?.foam || '--'}</Typography>
-                                                <Typography variant="body2">Normal: {sub?.washQuota?.normal || '--'}</Typography>
+                                                <Typography variant="body2">Foam: {sub?.planId?.washQuota?.foam || '--'}</Typography>
+                                                <Typography variant="body2">Normal: {sub?.planId?.washQuota?.normal || '--'}</Typography>
                                             </TableCell>
 
                                             {/* Remaining Quota */}
                                             <TableCell>
-                                                <Typography variant="body2">Foam: {sub?.washQuota?.foam  ? (sub?.washQuota?.foam - sub?.washesUsed?.foam) : '--'}</Typography>
-                                                <Typography variant="body2">Normal: {sub?.washQuota?.normal ? (sub?.washQuota?.normal - sub?.washesUsed?.normal) : '--'}</Typography>
+                                                <Typography variant="body2">Foam: {sub?.planId?.washQuota?.foam  ? (sub?.planId?.washQuota?.foam - sub?.washesUsed?.foam) : '--'}</Typography>
+                                                <Typography variant="body2">Normal: {sub?.planId?.washQuota?.normal ? (sub?.planId?.washQuota?.normal - sub?.washesUsed?.normal) : '--'}</Typography>
                                             </TableCell>
 
                                             {/* Vehicle Selector */}

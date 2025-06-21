@@ -15,6 +15,20 @@ export const fetchVehicles = createAsyncThunk(
       }
     }
   );
+
+  export const fetchVehiclesByApartment = createAsyncThunk(
+    'vehicles/fetchvehiclesbyapartment',
+    async (id, { rejectWithValue }) => {
+      try {
+        const res = await API.get(`vehicles/apartment/${id}`);
+        return res.data;
+      } catch (error) {
+        const message =
+          error.response?.data?.error || error.message || 'Something went wrong';
+        return rejectWithValue(message);
+      }
+    }
+  );
   
   
   export const deleteVehicles = createAsyncThunk(
