@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import {
     Modal,
@@ -9,15 +10,19 @@ import {
     IconButton,
     Autocomplete,
     FormControl,
-    InputLabel,
     Select,
     MenuItem,
+    FormControlLabel,
+    Checkbox,
+    RadioGroup,
+    Radio,
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { CloseOutlined } from '@mui/icons-material';
-import { addCustomer, fetchCustomer, updateCustomer } from '../../redux/actions/customers';
+import { fetchCustomer } from '../../redux/actions/customers';
 import { fetchVehiclesByApartment } from '../../redux/actions/vehicles';
 import { fetchSubscription, fetchSubscriptionByVehicle } from '../../redux/actions/subscription';
+import { addWashLog } from '../../redux/actions/washLog';
 
 const style = {
     position: 'absolute',
@@ -36,21 +41,19 @@ const style = {
 
 const AddWashLogs = ({ open, handleClose, data, editModal }) => {
     const dispatch = useDispatch();
-    const { list: customerList, loading } = useSelector((state) => state.customer);
+    const { list: customerList } = useSelector((state) => state.customer);
     const { vehicle_apartmentList: vehicle_apartmentList, } = useSelector((state) => state.vehicle);
     const { list_subscription_vehicle, list } = useSelector((state) => state.subscription);
-    const [errors, setErrors] = useState({});
     const [washType, setWashType] = useState('');
     const [vehcileId, setVehicleId] = useState('');
     const [selectedCustomer, setSelectedCustomer] = useState('');
     const [subscriptionId, setSubscriptionId] = useState('');
     const [subs, setSubs] = useState([]);
-    const [formData, setFormData] = useState({
-        name: '',
-        phone: '',
-        blockNumber: '',
-        flatNumber: ''
-    });
+    const [isAdditional, setIsAdditional] = useState(false);
+    const [selectedSubscription, setSelectedSubscription] = useState();
+    const [type, setType] = useState('');
+    const [additionalCharge, setAdditionalCharge] = useState('');
+    const [description, setDescription] = useState('');
 
     useEffect(() => {
         if (data?.apartmentId) {
@@ -59,17 +62,6 @@ const AddWashLogs = ({ open, handleClose, data, editModal }) => {
         }
 
     }, [data?.apartmentId])
-
-    useEffect(() => {
-        if (editModal && data) {
-            setFormData({
-                name: data.name || '',
-                phone: data.phone || '',
-                blockNumber: data.blockNumber || '',
-                flatNumber: data.flatNumber || ''
-            });
-        }
-    }, [editModal, data]);
 
     useEffect(() => {
         if (vehcileId) {
@@ -113,60 +105,37 @@ const AddWashLogs = ({ open, handleClose, data, editModal }) => {
             setVehicleId('');
             setWashType(newValue);
             setSelectedCustomer('');
+            setAdditionalCharge('');
         }
     };
 
-    const validate = () => {
-        const newErrors = {};
-
-        if (!formData.name.trim()) {
-            newErrors.name = 'Customer name is required';
+    useEffect(() => {
+        const sub = subs.find((item) => item?._id === subscriptionId);
+        if (sub?.status === 'expired' || !sub || subscriptionId === "") {
+            setIsAdditional(true);
+        } else {
+            setIsAdditional(false);
         }
-
-        const phoneRegex = /^\+?[1-9]\d{7,14}$/; // Allows optional '+' and 8-15 digits total
-        if (!formData.phone || !phoneRegex.test(formData.phone)) {
-            newErrors.phone = 'Valid phone number is required';
-        }
-
-        if (!formData.blockNumber.trim()) {
-            newErrors.blockNumber = 'Block Number is required';
-        }
-
-        if (!formData.flatNumber.trim()) {
-            newErrors.flatNumber = 'Flat Number is required';
-        }
-
-        return newErrors;
-    };
-
+        setSelectedSubscription(sub);
+        setType('');
+    }, [subscriptionId]);
 
     const handleSubmit = () => {
-        const validationErrors = validate();
-        if (Object.keys(validationErrors).length > 0) {
-            setErrors(validationErrors);
-            return;
-        }
-
         const postBody = {
-            ...formData,
-            apartmentId: data.apartmentId,
+            type,
+            subscriptionId: subscriptionId || null,
+            reduceQuota: subscriptionId ? true : false,
+            apartmentId: data?.apartmentId,
+            customerId: selectedCustomer,
+            vehicleId: vehcileId || null,
+            isAdditional,
+            additionalCharge: isAdditional ? Number(additionalCharge) : 0,
+            description: description
         };
-        if (editModal) {
-            dispatch(updateCustomer({ payload: postBody, id: data?._id }));
-        } else {
-            dispatch(addCustomer(postBody));
-        }
-        handleClose();
-        setFormData({
-            name: '',
-            phone: '',
-            blockNumber: '',
-            flatNumber: '',
-        });
-        setErrors({});
-    };
 
-    const sub = subs.find((item) => item?._id === subscriptionId);
+        dispatch(addWashLog(postBody));
+        handleClose();
+    };
 
     return (
         <Modal open={open} onClose={handleClose}>
@@ -244,7 +213,9 @@ const AddWashLogs = ({ open, handleClose, data, editModal }) => {
                                 onChange={(event) => {
                                     setSubscriptionId(event.target.value);
                                 }}
-                            >
+                            ><MenuItem value="">
+                                    <em>None</em>
+                                </MenuItem>
                                 {subs.map((subscription) => (
                                     <MenuItem key={subscription._id} value={subscription._id}>
                                         {subscription.planId?.name}
@@ -257,29 +228,82 @@ const AddWashLogs = ({ open, handleClose, data, editModal }) => {
                     <Grid item xs={12} sm={6} mt={2}>
                         <Typography variant="body2">
                             Foam:{' '}
-                            {typeof sub?.planId?.washQuota?.foam === 'number'
-                                ? (sub?.planId?.washQuota?.foam ?? 0) - (sub?.washesUsed?.foam ?? 0)
+                            {typeof selectedSubscription?.planId?.washQuota?.foam === 'number'
+                                ? (selectedSubscription?.planId?.washQuota?.foam ?? 0) - (selectedSubscription?.washesUsed?.foam ?? 0)
                                 : '--'}
                         </Typography>
 
                         <Typography variant="body2">
                             Normal:{' '}
-                            {typeof sub?.planId?.washQuota?.normal === 'number'
-                                ? (sub?.planId?.washQuota?.normal ?? 0) - (sub?.washesUsed?.normal ?? 0)
+                            {typeof selectedSubscription?.planId?.washQuota?.normal === 'number'
+                                ? (selectedSubscription?.planId?.washQuota?.normal ?? 0) - (selectedSubscription?.washesUsed?.normal ?? 0)
                                 : '--'}
                         </Typography>
                     </Grid>
                     <Grid item xs={12} sm={6} mt={2}>
                         <Typography variant="body2" mt={1}>
-                            Status: {sub?.status ?? '--'}
+                            Status: {selectedSubscription?.status ?? '--'}
                         </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6} mt={2}>
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={isAdditional}
+                                    disabled={selectedSubscription?.status || subscriptionId === ""}
+                                    onChange={(e) => setIsAdditional(e.target.checked)}
+                                />
+                            }
+                            label="Additional wash"
+                        />
+                    </Grid>
+                </Grid>
+                <Grid container spacing={2} alignItems="center" mt={2}>
+
+                    <Grid item xs={12} sm={6} mt={2}>
+                        <Typography fontWeight={500}>Wash Type</Typography>
+                        <RadioGroup
+                            row
+                            value={type}
+                            onChange={(e) => setType(e.target.value)}
+                        >
+                            <FormControlLabel value="foam" disabled={(selectedSubscription ? (selectedSubscription?.planId?.washQuota?.foam) - (selectedSubscription?.washesUsed?.foam) === 0 : false) && !isAdditional} control={<Radio />} label="Foam" />
+                            <FormControlLabel value="normal" disabled={(selectedSubscription ? (selectedSubscription?.planId?.washQuota?.normal) - (selectedSubscription?.washesUsed?.normal) === 0 : false) && !isAdditional} control={<Radio />} label="Normal" />
+                        </RadioGroup>
+                    </Grid>
+
+                    {isAdditional && <Grid item xs={12} sm={6} mt={2}>
+                        <Typography fontWeight={500}>Charge</Typography>
+                        <TextField
+                            size="small"
+                            fullWidth
+                            value={additionalCharge}
+                            onChange={(e) => setAdditionalCharge(e.target.value)}
+                        />
+
+                    </Grid>}
+                </Grid>
+                <Grid container alignItems="center" mt={2}>
+                    <Grid item xs={12} sx={{
+                        width: '100%'
+                    }}>
+                        <Typography fontWeight={500}>Description</Typography>
+                        <TextField
+                            rows={4}
+                            fullWidth
+                            size="large"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                        />
                     </Grid>
                 </Grid>
 
 
+                <Grid item xs={12} sm={6} mt={2}>
+                </Grid>
                 <Box mt={3} display="flex" justifyContent="flex-end" gap={1}>
                     <Button onClick={handleClose}>Cancel</Button>
-                    <Button variant="contained" color="primary" onClick={handleSubmit}>
+                    <Button variant="contained" color="primary" disabled={!selectedCustomer || !type} onClick={handleSubmit}>
                         {editModal ? 'Edit' : 'Add'}
                     </Button>
                 </Box>

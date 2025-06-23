@@ -64,7 +64,8 @@ const WashLogs = () => {
                                 <TableCell><strong>Brand & Model</strong></TableCell>
                                 <TableCell><strong>Block & Parking No.</strong></TableCell>
                                 <TableCell><strong>Wash Type</strong></TableCell>
-                                <TableCell><strong>Additional Wash & Charge</strong></TableCell>
+                                <TableCell><strong>Charge</strong></TableCell>
+                                <TableCell><strong>Description</strong></TableCell>
                                 <TableCell><strong>Wash Done on</strong></TableCell>
                             </TableRow>
                         </TableHead>
@@ -87,6 +88,7 @@ const WashLogs = () => {
                                         <TableCell>
                                             {wash?.isAdditional ? `₹${wash.additionalCharge.toLocaleString('en-IN')}` : ''}
                                         </TableCell>
+                                        <TableCell>{wash?.description}</TableCell>
                                         <TableCell> {wash?.createdAt ? format(new Date(wash.createdAt), 'dd MMM yyyy, h:mm a') : '--'}</TableCell>
                                     </TableRow>
                                 ))

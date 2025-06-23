@@ -22,7 +22,7 @@ export const addWashLog = createAsyncThunk(
         try {
             await API.post('washlog', payload);
             dispatch(fetchWashLogByApartment(payload.apartmentId));
-            toast.success('subscription added');
+            toast.success('Wash Added');
         } catch (err) {
             toast.error(err.response?.data?.error || 'Add failed');
             dispatch(fetchWashLogByApartment(payload.apartmentId));
