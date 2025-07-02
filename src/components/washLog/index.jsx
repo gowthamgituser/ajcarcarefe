@@ -19,7 +19,7 @@ import { useParams } from "react-router-dom";
 import AddWashLogs from "./AddWashLogs";
 import { deleteWashLog, fetchWashLogByApartment } from "../../redux/actions/washLog";
 import { format } from "date-fns";
-import ConfirmationModal from "../uiComponents/confirmationModal";
+import AlertModal from "../uiComponents/AlertMoidal";
 
 const WashLogs = () => {
     const dispatch = useDispatch();
@@ -163,7 +163,7 @@ const WashLogs = () => {
                 />
             } */}
             {
-                showDeleteModal && <ConfirmationModal
+                showDeleteModal && <AlertModal
                     open={showDeleteModal}
                     handleClose={() => {
                         setShowDeleteModal(false);

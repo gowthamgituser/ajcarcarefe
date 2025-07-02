@@ -7,7 +7,7 @@ import {
   Typography,
 } from '@mui/material';
 
-const ConfirmationModal = ({ open, handleClose, handleConfirmDelete }) => {
+const AlertModal = ({ open, handleClose, handleConfirmDelete }) => {
 
   return (
     <>
@@ -28,4 +28,4 @@ const ConfirmationModal = ({ open, handleClose, handleConfirmDelete }) => {
   );
 
   };
- export default ConfirmationModal;
+ export default AlertModal;
