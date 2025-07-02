@@ -19,8 +19,8 @@ import { useParams } from "react-router-dom";
 import AddWashLogs from "./AddWashLogs";
 import { deleteWashLog, fetchWashLogByApartment } from "../../redux/actions/washLog";
 import { format } from "date-fns";
-import EditWashLog from "./EditWashLog";
 import ConfirmationModal from "../uiComponents/confirmationModal";
+
 const WashLogs = () => {
     const dispatch = useDispatch();
     const { list_apartment, loading } = useSelector((state) => state.washLog);
