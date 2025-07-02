@@ -13,19 +13,23 @@ import {
     Box,
     CircularProgress
 } from "@mui/material";
-import { EditNoteOutlined, ManageAccounts, StartOutlined } from "@mui/icons-material";
+import { DeleteForeverOutlined, EditNoteOutlined } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import CustomerModal from "../cusomter/customerModal";
 import AddWashLogs from "./AddWashLogs";
-import { fetchWashLogByApartment } from "../../redux/actions/washLog";
+import { deleteWashLog, fetchWashLogByApartment } from "../../redux/actions/washLog";
 import { format } from "date-fns";
+import EditWashLog from "./EditWashLog";
+import ConfirmationModal from "../uiComponents/confirmationModal";
 const WashLogs = () => {
     const dispatch = useDispatch();
     const { list_apartment, loading } = useSelector((state) => state.washLog);
     const [showModal, setShowModal] = useState({ open: false, data: null })
     const [showEditModal, setShowEditModal] = useState({ open: false, data: null });
     const [showCustomerSubModal, setShowCustomerSubModal] = useState({ open: false, data: null });
+    // const [showEditWashModal, setShowEditWashModal] = useState({ open: false, data: null });
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deleteLog, setDeleteLog] = useState({});
 
     const { id } = useParams();
     useEffect(() => {
@@ -67,6 +71,7 @@ const WashLogs = () => {
                                 <TableCell><strong>Charge</strong></TableCell>
                                 <TableCell><strong>Description</strong></TableCell>
                                 <TableCell><strong>Wash Done on</strong></TableCell>
+                                <TableCell><strong>Action</strong></TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -90,6 +95,30 @@ const WashLogs = () => {
                                         </TableCell>
                                         <TableCell>{wash?.description}</TableCell>
                                         <TableCell> {wash?.createdAt ? format(new Date(wash.createdAt), 'dd MMM yyyy, h:mm a') : '--'}</TableCell>
+                                        <TableCell>
+                                            {/* <IconButton color="primary"
+                                                onClick={() => {
+                                                    setShowEditWashModal({
+                                                        open: true,
+                                                        data: wash
+                                                    })
+                                                }}
+                                            >
+                                                <EditNoteOutlined />
+                                            </IconButton> */}
+                                            <IconButton color="primary" onClick={() => {
+                                                // const postBody = {
+                                                //     apartmentId: wash.apartmentId,
+                                                //     _id: wash._id
+                                                // };
+                                                // dispatch(deleteWashLog(postBody))
+                                                setDeleteLog(wash);
+                                                setShowDeleteModal(true);
+                                            }}
+                                            >
+                                                <DeleteForeverOutlined />
+                                            </IconButton>
+                                        </TableCell>
                                     </TableRow>
                                 ))
                             ) : (
@@ -113,7 +142,6 @@ const WashLogs = () => {
                 showEditModal.open && <AddWashLogs
                     data={showEditModal.data}
                     open={showEditModal.open}
-                    editModal={true}
                     handleClose={() => setShowEditModal({ open: false, data: null })}
                 />
             }
@@ -123,6 +151,31 @@ const WashLogs = () => {
                     open={showCustomerSubModal.open}
                     handleClose={() => {
                         setShowCustomerSubModal({ open: false, data: null });
+                    }}
+                />
+            }
+            {/* {
+                showEditWashModal.open && <EditWashLog
+                    data={showEditWashModal.data}
+                    open={showEditWashModal.open}
+                    editModal={true}
+                    handleClose={() => setShowEditWashModal({ open: false, data: null })}
+                />
+            } */}
+            {
+                showDeleteModal && <ConfirmationModal
+                    open={showDeleteModal}
+                    handleClose={() => {
+                        setShowDeleteModal(false);
+                    }}
+                    handleConfirmDelete={() => {
+                        const postBody = {
+                            apartmentId: deleteLog.apartmentId,
+                            _id: deleteLog._id
+                        };
+                        dispatch(deleteWashLog(postBody));
+                        setShowDeleteModal(false);
+                        setDeleteLog({});
                     }}
                 />
             }

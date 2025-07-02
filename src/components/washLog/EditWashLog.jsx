@@ -22,7 +22,7 @@ import { CloseOutlined } from '@mui/icons-material';
 import { fetchCustomer } from '../../redux/actions/customers';
 import { fetchVehiclesByApartment } from '../../redux/actions/vehicles';
 import { fetchSubscription, fetchSubscriptionByVehicle } from '../../redux/actions/subscription';
-import { addWashLog } from '../../redux/actions/washLog';
+import { editWashLog } from '../../redux/actions/washLog';
 
 const style = {
     position: 'absolute',
@@ -39,7 +39,7 @@ const style = {
     p: { xs: 1, sm: 2 },
 };
 
-const AddWashLogs = ({ open, handleClose, data, editModal }) => {
+const EditWashLog = ({ open, handleClose, data, editModal }) => {
     const dispatch = useDispatch();
     const { list: customerList } = useSelector((state) => state.customer);
     const { vehicle_apartmentList: vehicle_apartmentList, } = useSelector((state) => state.vehicle);
@@ -54,7 +54,7 @@ const AddWashLogs = ({ open, handleClose, data, editModal }) => {
     const [type, setType] = useState('');
     const [additionalCharge, setAdditionalCharge] = useState('');
     const [description, setDescription] = useState('');
-
+    console.log(data);
     useEffect(() => {
         if (data?.apartmentId) {
             dispatch(fetchCustomer(data?.apartmentId))
@@ -63,6 +63,29 @@ const AddWashLogs = ({ open, handleClose, data, editModal }) => {
 
     }, [data?.apartmentId])
 
+    useEffect(() => {
+        if (editModal && data) {
+          setType(data.type || '');
+          setDescription(data.description || '');
+          setIsAdditional(data.isAdditional);
+          setAdditionalCharge(data.additionalCharge || '');
+          setSelectedCustomer(data?.customerId?._id || '');
+      
+          const isVehicleObj = typeof data.vehicleId === 'object' && data.vehicleId !== null && '_id' in data.vehicleId;
+      
+          if (isVehicleObj) {
+            setVehicleId(data.vehicleId._id);
+            const washType = vehicle_apartmentList.find((v) => v._id === data.vehicleId._id)?.vehicleNumber || '';
+            setWashType(washType);
+          } else {
+            setVehicleId('');
+            setWashType(data?.vehicleId);
+          }
+        }
+      }, [editModal, data, vehicle_apartmentList]);
+      
+        console.log(selectedSubscription);
+        console.log(subs);
     useEffect(() => {
         if (vehcileId) {
             dispatch(fetchSubscriptionByVehicle(vehcileId));
@@ -85,6 +108,12 @@ const AddWashLogs = ({ open, handleClose, data, editModal }) => {
         }
 
     }, [list_subscription_vehicle, list])
+
+    useEffect(() => {
+        if (subs.length) {
+            setSubscriptionId(data.subscriptionId || '');
+        }
+    }, [subs]);
 
     const handleCustomerChange = (event) => {
         setSelectedCustomer(event.target.value);
@@ -112,13 +141,12 @@ const AddWashLogs = ({ open, handleClose, data, editModal }) => {
     useEffect(() => {
         const sub = subs.find((item) => item?._id === subscriptionId);
         if (sub?.status === 'expired' || !sub || subscriptionId === "") {
-            setIsAdditional(true);
+          setIsAdditional(true);
         } else {
-            setIsAdditional(false);
+          setIsAdditional(false);
         }
         setSelectedSubscription(sub);
-        setType('');
-    }, [subscriptionId]);
+      }, [subscriptionId, subs]);
 
     const handleSubmit = () => {
         const postBody = {
@@ -127,13 +155,14 @@ const AddWashLogs = ({ open, handleClose, data, editModal }) => {
             reduceQuota: subscriptionId ? true : false,
             apartmentId: data?.apartmentId,
             customerId: selectedCustomer,
-            vehicleId: vehcileId || washType || null,
+            vehicleId: vehcileId || null,
             isAdditional,
             additionalCharge: isAdditional ? Number(additionalCharge) : 0,
-            description: description
+            description: description,
+            _id: data?._id
         };
-
-        dispatch(addWashLog(postBody));
+console.log(postBody);
+        dispatch(editWashLog(postBody));
         handleClose();
     };
 
@@ -164,7 +193,7 @@ const AddWashLogs = ({ open, handleClose, data, editModal }) => {
                             freeSolo
                             options={vehicle_apartmentList}
                             getOptionLabel={(option) =>
-                                typeof option === 'string' ? option : (option.model + ' -' || '-') + '' +  option.vehicleNumber
+                                typeof option === 'string' ? option : (option.model + '-' || '-') + '' +  option.vehicleNumber
                             }
                             value={washType}
                             onChange={handleVehicleChange}
@@ -312,4 +341,4 @@ const AddWashLogs = ({ open, handleClose, data, editModal }) => {
     );
 };
 
-export default AddWashLogs;
+export default EditWashLog;

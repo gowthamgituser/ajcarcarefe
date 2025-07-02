@@ -16,8 +16,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getApartment } from "../../redux/actions/apartment";
-
-const menuItems = ["Car Wash Logs", "Customer", "Plan", "Invoices"];
+import { menuItems } from "../../utils/constants";
 
 const NavBar = ({ onMenuSelect }) => {
   const { apartmentData } = useSelector((state) => state.apartment);

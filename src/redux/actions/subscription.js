@@ -6,8 +6,11 @@ export const fetchSubscription = createAsyncThunk(
     'subscription/fetchSubscription',
     async (id, { rejectWithValue }) => {
       try {
-        const res = await API.get(`subscription/customer/${id}`);
-        return res.data;
+        const res = await API.get(`subscription/customer/${id}`, {
+            params: {
+              all: true
+            }
+          });        return res.data;
       } catch (error) {
         const message =
           error.response?.data?.error || error.message || 'Something went wrong';

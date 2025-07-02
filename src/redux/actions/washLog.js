@@ -30,3 +30,33 @@ export const addWashLog = createAsyncThunk(
         }
     }
 );
+
+export const editWashLog = createAsyncThunk(
+    'washLog/editWashLog',
+    async (payload, { dispatch, rejectWithValue }) => {
+        try {
+            await API.put(`washlog/${payload._id}`, payload);
+            dispatch(fetchWashLogByApartment(payload.apartmentId));
+            toast.success('Wash Edited');
+        } catch (err) {
+            toast.error(err.response?.data?.error || 'Edit failed');
+            dispatch(fetchWashLogByApartment(payload.apartmentId));
+            return rejectWithValue('Edit failed');
+        }
+    }
+);
+
+export const deleteWashLog = createAsyncThunk(
+    'washLog/deleteWashLog',
+    async (payload, { dispatch, rejectWithValue }) => {
+        try {
+            await API.delete(`washlog/${payload._id}`, payload);
+            dispatch(fetchWashLogByApartment(payload.apartmentId));
+            toast.success('Wash Log Deleted');
+        } catch (err) {
+            toast.error(err.response?.data?.error || 'Delete failed');
+            dispatch(fetchWashLogByApartment(payload.apartmentId));
+            return rejectWithValue('Delete failed');
+        }
+    }
+);
