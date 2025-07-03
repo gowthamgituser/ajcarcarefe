@@ -5,6 +5,7 @@ import planReducer from './slice/planSlice.js'
 import vehicleReducer from './slice/vehicleSlice.js'
 import subscriptionReducer from './slice/subscriptionSlice.js'
 import washLogReducer from './slice/washLogSlice.js'
+import invoiceReducer from './slice/invoiceSlice.js'
 
 export const store = configureStore({
   reducer: {
@@ -14,5 +15,6 @@ export const store = configureStore({
     vehicle: vehicleReducer,
     subscription: subscriptionReducer,
     washLog: washLogReducer,
+    invoice: invoiceReducer
   },
 });
