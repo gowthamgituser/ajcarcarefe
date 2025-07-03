@@ -4,9 +4,14 @@ import { toast } from 'react-toastify';
 
 export const fetchInvoice = createAsyncThunk(
     'invoice/fetchInvoice',
-    async (id, { rejectWithValue }) => {
+    async ({id, month, year}, { rejectWithValue }) => {
       try {
-        const res = await API.get(`invoice/apartment/${id}`);
+        const res = await API.get(`invoice/apartment/${id}`, {
+            params: {
+                month,
+                year
+            },
+        });
         return res.data;
       } catch (error) {
         const message =

@@ -22,6 +22,9 @@ import '../invoice/index.css';
 import { GridMoreVertIcon } from "@mui/x-data-grid";
 import StatusModal from "./statusModal";
 import { format } from "date-fns";
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 const Invoice = () => {
     const dispatch = useDispatch();
@@ -32,16 +35,19 @@ const Invoice = () => {
         open: false,
         data: null
     });
-
+    const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedItem, setSelectedItem] = useState(null);
 
     const { id } = useParams();
 
     useEffect(() => {
         if (id) {
-            dispatch(fetchInvoice(id));
+            console.log(selectedDate);
+            const month = selectedDate.getMonth() + 1;
+            const year = selectedDate.getFullYear();
+            dispatch(fetchInvoice({ id, month, year }));
         }
-    }, [dispatch, id]);
+    }, [dispatch, id, selectedDate]);
 
 
     useEffect(() => {
@@ -58,12 +64,25 @@ const Invoice = () => {
         setAnchorEl(null);
         setSelectedItem(null);
     };
+
+    useEffect(() => {
+        console.log(selectedDate);
+    }, [selectedDate]);
+
     return (
         <>
-            {/* Main Content */}
             <Box sx={{ p: 2 }}>
-                <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+                <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2, alignItems: 'center' }}>
                     <Typography variant="h5">Invoices</Typography>
+                    <Box>
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DatePicker
+                                views={['year', 'month']}
+                                value={selectedDate}
+                                onChange={(newValue) => setSelectedDate(newValue)}
+                            />
+                        </LocalizationProvider>
+                    </Box>
                 </Box>
 
                 <TableContainer component={Paper} elevation={3}>
