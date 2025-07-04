@@ -54,7 +54,7 @@ const AddWashLogs = ({ open, handleClose, data, editModal }) => {
     const [type, setType] = useState('');
     const [additionalCharge, setAdditionalCharge] = useState('');
     const [description, setDescription] = useState('');
-
+    console.log(vehicle_apartmentList);
     useEffect(() => {
         if (data?.apartmentId) {
             dispatch(fetchCustomer(data?.apartmentId))
@@ -164,7 +164,7 @@ const AddWashLogs = ({ open, handleClose, data, editModal }) => {
                             freeSolo
                             options={vehicle_apartmentList}
                             getOptionLabel={(option) =>
-                                typeof option === 'string' ? option : (option.model + ' -' || '-') + '' +  option.vehicleNumber
+                                typeof option === 'string' ? option : (option.model + ' -' || '-') + '' +  option.vehicleNumber + '-' + (option?.customerId?.name || '')
                             }
                             value={washType}
                             onChange={handleVehicleChange}
