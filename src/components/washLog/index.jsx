@@ -13,13 +13,17 @@ import {
     Box,
     CircularProgress
 } from "@mui/material";
-import { DeleteForeverOutlined, EditNoteOutlined } from "@mui/icons-material";
+import { DeleteForeverOutlined, EditNoteOutlined, Search, SearchOffOutlined } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import AddWashLogs from "./AddWashLogs";
 import { deleteWashLog, fetchWashLogByApartment } from "../../redux/actions/washLog";
 import { format } from "date-fns";
 import AlertModal from "../uiComponents/AlertMoidal";
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { formatDate } from "../../utils/getMonth";
 
 const WashLogs = () => {
     const dispatch = useDispatch();
@@ -30,15 +34,34 @@ const WashLogs = () => {
     // const [showEditWashModal, setShowEditWashModal] = useState({ open: false, data: null });
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [deleteLog, setDeleteLog] = useState({});
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
 
     const { id } = useParams();
+
     useEffect(() => {
-        if (id) {
-            dispatch(fetchWashLogByApartment(id));
+        if (id && startDate && endDate) {
+            const formattedStartDate = formatDate(startDate);
+            const formattedEndDate = formatDate(endDate);
+
+            dispatch(fetchWashLogByApartment({
+                id,
+                startDate: formattedStartDate,
+                endDate: formattedEndDate
+            }));
         }
     }, [dispatch, id]);
 
-    console.log(list_apartment);
+    const handleSearch = () => {
+        const formattedStartDate = formatDate(startDate);
+            const formattedEndDate = formatDate(endDate);
+
+            dispatch(fetchWashLogByApartment({
+                id,
+                startDate: formattedStartDate,
+                endDate: formattedEndDate
+            }));
+    };
 
     return (
         <>
@@ -46,16 +69,46 @@ const WashLogs = () => {
             <Box sx={{ p: 2 }}>
                 <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
                     <Typography variant="h5">Wash Logs</Typography>
-                    <Button
-                        variant="contained"
-                        onClick={() => setShowModal({
-                            open: true, data: {
-                                apartmentId: id
-                            }
-                        })}
-                    >
-                        Add Wash
-                    </Button>
+                    <Box gap={2} style={{
+                        display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+                    }}>
+                        <Box>
+                            <Button
+                                variant="contained"
+                                onClick={() => setShowModal({
+                                    open: true, data: {
+                                        apartmentId: id
+                                    }
+                                })}
+                            >
+                                Add Wash
+                            </Button>
+                        </Box>
+                        <Box >
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <DatePicker
+                                    value={startDate}
+                                    onChange={(newValue) => setStartDate(newValue)}
+                                />
+                            </LocalizationProvider>
+                        </Box>
+                        <Box>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <DatePicker
+                                    value={endDate}
+                                    onChange={(newValue) => setEndDate(newValue)}
+                                />
+                            </LocalizationProvider>
+                        </Box>
+                        <Box>
+                        <IconButton onClick={() => {
+                            handleSearch();
+                        }}>
+                            <Search/>
+                        </IconButton>
+                        </Box>
+                    </Box>
+
                 </Box>
 
                 <TableContainer component={Paper} elevation={3}>

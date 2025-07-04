@@ -4,9 +4,14 @@ import API from '../../utils/axios';
 
 export const fetchWashLogByApartment = createAsyncThunk(
     'washLog/fetchWashLogApartment',
-    async (id, { rejectWithValue }) => {
+    async ({id, startDate, endDate}, { rejectWithValue }) => {
         try {
-            const res = await API.get(`washlog/apartment/${id}`);
+            const res = await API.get(`washlog/apartment/${id}`,{
+                params:{
+                    startDate,
+                    endDate
+                }
+            });
             return res.data;
         } catch (error) {
             const message =

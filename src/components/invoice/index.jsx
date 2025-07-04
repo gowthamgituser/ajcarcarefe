@@ -42,7 +42,6 @@ const Invoice = () => {
 
     useEffect(() => {
         if (id) {
-            console.log(selectedDate);
             const month = selectedDate.getMonth() + 1;
             const year = selectedDate.getFullYear();
             dispatch(fetchInvoice({ id, month, year }));
