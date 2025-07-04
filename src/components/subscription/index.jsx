@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import {
   Box,
+  Button,
+  Checkbox,
   Collapse,
   IconButton,
   Paper,
@@ -15,7 +17,7 @@ import {
 import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { fetchSubscriptionByApartment } from "../../redux/actions/subscription";
+import { fetchSubscriptionByApartment, reactivateSubscriptions } from "../../redux/actions/subscription";
 
 // Reusable component to show collapsible row
 const CollapseRow = ({ label, subscriptions }) => {
@@ -23,7 +25,7 @@ const CollapseRow = ({ label, subscriptions }) => {
 
   return (
     <>
-      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+      <TableRow>
         <TableCell>
           <IconButton size="small" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
@@ -71,10 +73,34 @@ const CollapseRow = ({ label, subscriptions }) => {
 
 const CollapseRowAllSubscription = ({ label, subscriptions }) => {
     const [open, setOpen] = useState(false);
-    console.log(subscriptions);
+    const [selectedIds, setSelectedIds] = useState([]);
+    const allIds = subscriptions.filter(id => id.status === 'expired').map((sub) => sub._id);
+    const dispatch = useDispatch();
+    const { id } = useParams();
+    const isAllSelected = selectedIds.length === allIds.length;
+  
+    const toggleSelectAll = () => {
+      if (isAllSelected) {
+        setSelectedIds([]);
+      } else {
+        setSelectedIds(allIds);
+      }
+    };
+  
+    const handleToggleOne = (id) => {
+      setSelectedIds((prev) =>
+        prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+      );
+    };
+
+    const renewSubscriptions = () => {
+        dispatch(reactivateSubscriptions({payload: {subscriptionIds: selectedIds}, id}));
+        setSelectedIds([]);
+    };
+
     return (
       <>
-        <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+        <TableRow>
           <TableCell>
             <IconButton size="small" onClick={() => setOpen(!open)}>
               {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
@@ -90,6 +116,25 @@ const CollapseRowAllSubscription = ({ label, subscriptions }) => {
           <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
             <Collapse in={open} timeout="auto" unmountOnExit>
               <Box margin={1}>
+              <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 1}} gap={2}>
+                  {allIds.length > 0 && <Button
+                    size="small"
+                    variant="contained" color="primary"
+                    onClick={toggleSelectAll}
+                  >
+                    {isAllSelected ? "Remove All" : "Select All"}
+                  </Button>}
+                  <Button
+                    disabled={selectedIds.length === 0}
+                    size="small"
+                    variant="contained" color="primary"
+                    onClick={()=>{
+                        renewSubscriptions();
+                    }}
+                  >
+                    {'Renew'}
+                  </Button>
+                </Box>
                 <Table size="medium">
                   <TableHead>
                     <TableRow>
@@ -98,6 +143,7 @@ const CollapseRowAllSubscription = ({ label, subscriptions }) => {
                       <TableCell><strong>Vehicle(s)</strong></TableCell>
                       <TableCell><strong>Plan</strong></TableCell>
                       <TableCell><strong>Status</strong></TableCell>
+                      <TableCell><strong>Renew</strong></TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -110,6 +156,12 @@ const CollapseRowAllSubscription = ({ label, subscriptions }) => {
                         </TableCell>
                         <TableCell>{sub.planId.name}</TableCell>
                         <TableCell>{sub.status.toUpperCase()}</TableCell>
+                        <TableCell>
+                          {sub.status === 'expired' && <Checkbox
+                            checked={selectedIds.includes(sub._id)}
+                            onChange={() => handleToggleOne(sub._id)}
+                          />}
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

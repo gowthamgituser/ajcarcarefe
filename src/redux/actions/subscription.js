@@ -95,3 +95,18 @@ export const updateSubscription = createAsyncThunk(
       }
     }
   );
+
+  export const reactivateSubscriptions = createAsyncThunk(
+    'subscription/renewSubscription',
+    async ({payload, id}, { dispatch, rejectWithValue }) => {
+        try {
+            await API.put('subscription/reactivate', payload);
+            dispatch(fetchSubscriptionByApartment(id));
+            toast.success('subscription updated successfully');
+        } catch (err) {
+            toast.error(err.response?.data?.error || 'Add failed');
+            dispatch(fetchSubscriptionByApartment(id));
+            return rejectWithValue('Add failed');
+        }
+    }
+  );
