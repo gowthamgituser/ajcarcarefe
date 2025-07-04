@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import API from '../../utils/axios';
+import { formatDate } from '../../utils/getMonth';
 
 export const fetchWashLogByApartment = createAsyncThunk(
     'washLog/fetchWashLogApartment',
@@ -23,18 +24,18 @@ export const fetchWashLogByApartment = createAsyncThunk(
 
 export const addWashLog = createAsyncThunk(
     'washLog/addWashLog',
-    async (payload, { dispatch, rejectWithValue }) => {
-        try {
-            await API.post('washlog', payload);
-            dispatch(fetchWashLogByApartment(payload.apartmentId));
-            toast.success('Wash Added');
-        } catch (err) {
-            toast.error(err.response?.data?.error || 'Add failed');
-            dispatch(fetchWashLogByApartment(payload.apartmentId));
-            return rejectWithValue('Add failed');
-        }
+    async ({ postBody, startDate, endDate }, { dispatch, rejectWithValue }) => {
+      try {
+        await API.post('washlog', postBody);
+        dispatch(fetchWashLogByApartment({ id: postBody.apartmentId, startDate: formatDate(startDate), endDate: formatDate(endDate)  }));
+        toast.success('Wash Added');
+      } catch (err) {
+        toast.error(err.response?.data?.error || 'Add failed');
+        dispatch(fetchWashLogByApartment({ id: postBody.apartmentId, startDate: formatDate(startDate), endDate: formatDate(endDate)  }));
+        return rejectWithValue('Add failed');
+      }
     }
-);
+  );  
 
 export const editWashLog = createAsyncThunk(
     'washLog/editWashLog',
@@ -53,14 +54,14 @@ export const editWashLog = createAsyncThunk(
 
 export const deleteWashLog = createAsyncThunk(
     'washLog/deleteWashLog',
-    async (payload, { dispatch, rejectWithValue }) => {
+    async ({ postBody, startDate, endDate }, { dispatch, rejectWithValue }) => {
         try {
-            await API.delete(`washlog/${payload._id}`, payload);
-            dispatch(fetchWashLogByApartment(payload.apartmentId));
+            await API.delete(`washlog/${postBody._id}`, postBody);
+            dispatch(fetchWashLogByApartment({ id: postBody.apartmentId, startDate: formatDate(startDate), endDate: formatDate(endDate)  }));
             toast.success('Wash Log Deleted');
         } catch (err) {
             toast.error(err.response?.data?.error || 'Delete failed');
-            dispatch(fetchWashLogByApartment(payload.apartmentId));
+            dispatch(fetchWashLogByApartment({ id: postBody.apartmentId, startDate: formatDate(startDate), endDate: formatDate(endDate)  }));
             return rejectWithValue('Delete failed');
         }
     }

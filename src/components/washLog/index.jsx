@@ -189,6 +189,8 @@ const WashLogs = () => {
             {showModal.open && <AddWashLogs
                 data={showModal.data}
                 open={showModal.open}
+                startDate={startDate}
+                endDate={endDate}
                 handleClose={() => setShowModal({ open: false, data: null })}
             />}
             {
@@ -226,7 +228,7 @@ const WashLogs = () => {
                             apartmentId: deleteLog.apartmentId,
                             _id: deleteLog._id
                         };
-                        dispatch(deleteWashLog(postBody));
+                        dispatch(deleteWashLog({postBody: postBody, startDate, endDate}));
                         setShowDeleteModal(false);
                         setDeleteLog({});
                     }}

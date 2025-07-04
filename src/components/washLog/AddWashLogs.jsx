@@ -39,7 +39,7 @@ const style = {
     p: { xs: 1, sm: 2 },
 };
 
-const AddWashLogs = ({ open, handleClose, data, editModal }) => {
+const AddWashLogs = ({ open, handleClose, data, editModal, startDate, endDate }) => {
     const dispatch = useDispatch();
     const { list: customerList } = useSelector((state) => state.customer);
     const { vehicle_apartmentList: vehicle_apartmentList, } = useSelector((state) => state.vehicle);
@@ -133,7 +133,7 @@ const AddWashLogs = ({ open, handleClose, data, editModal }) => {
             description: description
         };
 
-        dispatch(addWashLog(postBody));
+        dispatch(addWashLog({postBody: postBody, startDate, endDate}));
         handleClose();
     };
 
