@@ -4,11 +4,12 @@ import { useState } from "react";
 import Plans from "../plans";
 import WashLogs from "../washLog";
 import Invoice from "../invoice";
+import Subscriptions from "../subscription";
 
 const Apartment = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const components = [<WashLogs />, <Customer />, <Plans />, <Invoice />];
+  const components = [<WashLogs />, <Customer />, <Plans />, <Invoice />, <Subscriptions/>];
 
   return (
     <>

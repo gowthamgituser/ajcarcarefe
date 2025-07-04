@@ -1,7 +1,7 @@
 // src/redux/apartmentSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-import { fetchSubscription, fetchSubscriptionByVehicle } from '../actions/subscription';
+import { fetchSubscription, fetchSubscriptionByApartment, fetchSubscriptionByVehicle } from '../actions/subscription';
 
 // Slice
 const subscriptionSlice = createSlice({
@@ -11,6 +11,7 @@ const subscriptionSlice = createSlice({
     list_subscription_vehicle: [],
     loading: false,
     error: null,
+    list_subscription_apartment: []
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -39,6 +40,19 @@ const subscriptionSlice = createSlice({
         state.list_subscription_vehicle = action.payload;
       })
       .addCase(fetchSubscriptionByVehicle.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        toast.error(action.payload);
+      })
+      .addCase(fetchSubscriptionByApartment.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchSubscriptionByApartment.fulfilled, (state, action) => {
+        state.loading = false;
+        state.list_subscription_apartment = action.payload;
+      })
+      .addCase(fetchSubscriptionByApartment.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
         toast.error(action.payload);

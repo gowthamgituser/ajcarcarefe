@@ -87,6 +87,7 @@ const WashLogs = () => {
                         <Box >
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <DatePicker
+                                    label={'Start Date'}
                                     value={startDate}
                                     onChange={(newValue) => setStartDate(newValue)}
                                 />
@@ -95,6 +96,7 @@ const WashLogs = () => {
                         <Box>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <DatePicker
+                                    label={'End Date'}
                                     value={endDate}
                                     onChange={(newValue) => setEndDate(newValue)}
                                 />
@@ -130,7 +132,7 @@ const WashLogs = () => {
                         <TableBody>
                             {loading ? (
                                 <TableRow>
-                                    <TableCell colSpan={7} align="center">
+                                    <TableCell colSpan={10} align="center">
                                         <CircularProgress size={28} />
                                     </TableCell>
                                 </TableRow>
@@ -176,7 +178,7 @@ const WashLogs = () => {
                                 ))
                             ) : (
                                 <TableRow>
-                                    <TableCell colSpan={7} align="center">
+                                    <TableCell colSpan={10} align="center">
                                         No Wash Logs found.
                                     </TableCell>
                                 </TableRow>

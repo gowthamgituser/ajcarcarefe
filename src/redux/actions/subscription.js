@@ -81,3 +81,17 @@ export const updateSubscription = createAsyncThunk(
         }
     }
   );
+
+  export const fetchSubscriptionByApartment = createAsyncThunk(
+    'subscription/fetchSubscriptionApartment',
+    async (id, { rejectWithValue }) => {
+      try {
+        const res = await API.get(`subscription/apartment/${id}`);        
+        return res.data;
+      } catch (error) {
+        const message =
+          error.response?.data?.error || error.message || 'Something went wrong';
+        return rejectWithValue(message);
+      }
+    }
+  );
