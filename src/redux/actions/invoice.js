@@ -47,7 +47,7 @@ export const fetchInvoice = createAsyncThunk(
     async ({payload}, { dispatch, rejectWithValue }) => {
       try {
         await API.put(`invoice/payment-status/${payload.customerId}`, payload);
-        dispatch(fetchInvoice(payload.apartmentId));
+        dispatch(fetchInvoice({id: payload.apartmentId}));
         toast.success('Payment updated successfully');
       } catch (error) {
         const message =
