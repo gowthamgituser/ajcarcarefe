@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import {
+    Backdrop,
   Box,
   Button,
   Checkbox,
+  CircularProgress,
   Collapse,
   IconButton,
   Paper,
@@ -177,7 +179,7 @@ const CollapseRowAllSubscription = ({ label, subscriptions }) => {
 const Subscriptions = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
-  const { list_subscription_apartment } = useSelector(state => state.subscription);
+  const { list_subscription_apartment, loading } = useSelector(state => state.subscription);
 
   const [grouped, setGrouped] = useState({});
   const [allSubs, setAllSubs] = useState([]);
@@ -204,21 +206,27 @@ const Subscriptions = () => {
     <Box sx={{ p: 2 }}>
       <Typography variant="h6" gutterBottom>Subscription Summary</Typography>
 
-      <TableContainer component={Paper}>
-        <Table>
-          <TableBody>
-            {/* All Subscriptions Collapse Row */}
-            {allSubs.length > 0 && (
-              <CollapseRowAllSubscription label="All Subscriptions" subscriptions={allSubs} />
-            )}
+      <Backdrop open={loading} sx={{ zIndex: theme => theme.zIndex.drawer + 1 }}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
 
-            {/* Plan-wise Collapse Rows */}
-            {Object.entries(grouped).map(([plan, subs]) => (
-              <CollapseRow key={plan} label={plan} subscriptions={subs} />
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      {!loading && (
+        <TableContainer component={Paper}>
+          <Table>
+            <TableBody>
+              {/* All Subscriptions Collapse Row */}
+              {allSubs.length > 0 && (
+                <CollapseRowAllSubscription label="All Subscriptions" subscriptions={allSubs} />
+              )}
+
+              {/* Plan-wise Collapse Rows */}
+              {Object.entries(grouped).map(([plan, subs]) => (
+                <CollapseRow key={plan} label={plan} subscriptions={subs} />
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
     </Box>
   );
 };

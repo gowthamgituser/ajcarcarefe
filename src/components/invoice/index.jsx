@@ -12,7 +12,8 @@ import {
     CircularProgress,
     IconButton,
     Menu,
-    MenuItem
+    MenuItem,
+    Tooltip
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -93,7 +94,7 @@ const Invoice = () => {
                                 <TableCell><strong>Name</strong></TableCell>
                                 <TableCell><strong>Phone</strong></TableCell>
                                 <TableCell><strong>Amount</strong></TableCell>
-                                <TableCell><strong>Status</strong></TableCell>
+                                <TableCell><strong>Payment Status</strong></TableCell>
                                 <TableCell><strong>Payment Done on</strong></TableCell>
                                 <TableCell><strong>Action</strong></TableCell>
                             </TableRow>
@@ -114,12 +115,12 @@ const Invoice = () => {
                                         <TableCell>{item.phone}</TableCell>
                                         <TableCell>{`₹${item.amount.toLocaleString('en-IN')}`}</TableCell>
                                         <TableCell>
-                                            <Box className='invoice-box' style={{ backgroundColor: item.paymentStatus === 'paid' ? 'lightgreen' : '#FFCCCB', color: item.paymentStatus === 'paid' ? 'green' : 'red' }}>
+                                        <Tooltip title={item.statusNotes || ''}><Box className='invoice-box' style={{ backgroundColor: item.paymentStatus === 'paid' ? 'lightgreen' : '#FFCCCB', color: item.paymentStatus === 'paid' ? 'green' : 'red' }}>
                                                 {item.paymentStatus?.toUpperCase()}
-                                            </Box>
+                                            </Box></Tooltip>
 
                                         </TableCell>
-                                        <TableCell> {item?.paymentDate && item?.paymentStatus === 'paid' ? format(new Date(item.paymentDate), 'dd MMM yyyy, h:mm a') : '--'}</TableCell>
+                                        <TableCell>{item?.paymentDate && item?.paymentStatus === 'paid' ? format(new Date(item.paymentDate), 'dd MMM yyyy, h:mm a') : '--'}</TableCell>
                                         <TableCell>
                                             <IconButton onClick={(e) => handleOpen(e, item)}>
                                                 <GridMoreVertIcon />
@@ -130,19 +131,31 @@ const Invoice = () => {
                                                 onClose={handleClose}
                                             >
                                                 <MenuItem onClick={() => {
+                                                    // Implement send invoice logic here if needed
+                                                    handleClose();
+                                                }}>
+                                                    <strong>View Invoice</strong>
+                                                </MenuItem>
+                                                <MenuItem onClick={() => {
                                                     setStatusModal({
                                                         open: true,
                                                         data: selectedItem, // reliable!
                                                     });
                                                     handleClose();
                                                 }}>
-                                                    <strong>Update Status</strong>
+                                                    <strong>Update Payment</strong>
                                                 </MenuItem>
                                                 <MenuItem onClick={() => {
                                                     // Implement send invoice logic here if needed
                                                     handleClose();
                                                 }}>
                                                     <strong>Send Invoice</strong>
+                                                </MenuItem>
+                                                <MenuItem onClick={() => {
+                                                    // Implement send invoice logic here if needed
+                                                    handleClose();
+                                                }}>
+                                                    <strong>Download Invoice</strong>
                                                 </MenuItem>
                                             </Menu>
                                         </TableCell>
