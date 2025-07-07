@@ -57,4 +57,22 @@ export const fetchInvoice = createAsyncThunk(
     }
   );
   
+  export const fetchCustomerInvoice = createAsyncThunk(
+    'invoice/fetchCustomerInvoice',
+    async ({id, month, year}, { rejectWithValue }) => {
+      try {
+        const res = await API.get(`invoice/customer/${id}`, {
+            params: {
+                month,
+                year
+            },
+        });
+        return res.data;
+      } catch (error) {
+        const message =
+          error.response?.data?.error || error.message || 'Something went wrong';
+        return rejectWithValue(message);
+      }
+    }
+  );
   

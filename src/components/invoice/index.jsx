@@ -26,6 +26,7 @@ import { format } from "date-fns";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import DetailedInvoice from "./detailedInvoice";
 
 const Invoice = () => {
     const dispatch = useDispatch();
@@ -33,6 +34,10 @@ const Invoice = () => {
     const [invoiceRecord, setInvoiceRecord] = useState([]);
     const [anchorEl, setAnchorEl] = useState(null);
     const [statusModal, setStatusModal] = useState({
+        open: false,
+        data: null
+    });
+    const [invoiceModal, setInvoiceModal] = useState({
         open: false,
         data: null
     });
@@ -131,7 +136,10 @@ const Invoice = () => {
                                                 onClose={handleClose}
                                             >
                                                 <MenuItem onClick={() => {
-                                                    // Implement send invoice logic here if needed
+                                                    setInvoiceModal({
+                                                        open: true,
+                                                        data: selectedItem,
+                                                    });
                                                     handleClose();
                                                 }}>
                                                     <strong>View Invoice</strong>
@@ -139,20 +147,18 @@ const Invoice = () => {
                                                 <MenuItem onClick={() => {
                                                     setStatusModal({
                                                         open: true,
-                                                        data: selectedItem, // reliable!
+                                                        data: selectedItem,
                                                     });
                                                     handleClose();
                                                 }}>
                                                     <strong>Update Payment</strong>
                                                 </MenuItem>
                                                 <MenuItem onClick={() => {
-                                                    // Implement send invoice logic here if needed
                                                     handleClose();
                                                 }}>
                                                     <strong>Send Invoice</strong>
                                                 </MenuItem>
                                                 <MenuItem onClick={() => {
-                                                    // Implement send invoice logic here if needed
                                                     handleClose();
                                                 }}>
                                                     <strong>Download Invoice</strong>
@@ -177,6 +183,11 @@ const Invoice = () => {
                 data={statusModal.data}
                 open={statusModal.open}
                 handleClose={() => setStatusModal({ open: false, data: null })}
+            />}
+            {invoiceModal.open && <DetailedInvoice
+                data={invoiceModal.data}
+                open={invoiceModal.open}
+                handleClose={() => setInvoiceModal({ open: false, data: null })}
             />}
         </>
     );

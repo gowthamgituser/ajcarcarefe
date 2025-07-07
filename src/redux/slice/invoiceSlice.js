@@ -1,16 +1,18 @@
 // src/redux/apartmentSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-import { fetchInvoice, fetchPaymentStatus } from '../actions/invoice';
+import { fetchCustomerInvoice, fetchInvoice, fetchPaymentStatus } from '../actions/invoice';
 
 // Slice
 const invoiceSlice = createSlice({
   name: 'invoice',
   initialState: {
     list: [],
+    customerInvoice: [],
     paymentStatus: [],
     loading: false,
     paymentStatusloading: false,
+    customerInvoiceLoading: false,
     error: null,
   },
   reducers: {},
@@ -41,6 +43,19 @@ const invoiceSlice = createSlice({
       })
       .addCase(fetchPaymentStatus.rejected, (state, action) => {
         state.paymentStatusloading = false;
+        state.error = action.payload;
+        toast.error(action.payload);
+      })
+      .addCase(fetchCustomerInvoice.pending, (state) => {
+        state.customerInvoiceLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchCustomerInvoice.fulfilled, (state, action) => {
+        state.customerInvoiceLoading = false;
+        state.customerInvoice = action.payload;
+      })
+      .addCase(fetchCustomerInvoice.rejected, (state, action) => {
+        state.customerInvoiceLoading = false;
         state.error = action.payload;
         toast.error(action.payload);
       })
