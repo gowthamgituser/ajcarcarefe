@@ -54,7 +54,8 @@ const StatusModal = ({ open, handleClose, data }) => {
             year: data?.year,
             customerId: data?.customerId,
             status: paymentStatus,
-            notes: notes
+            notes: notes,
+            amount: paymentStatus === 'paid' ? data.amount : 0
         };
         dispatch(updatePayment({ payload: postBody}));
         handleClose();
