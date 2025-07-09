@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { fetchInvoice } from "../../redux/actions/invoice";
+import { downloadCustomerInvoice, fetchInvoice } from "../../redux/actions/invoice";
 import { getMonthName } from "../../utils/getMonth";
 import '../invoice/index.css';
 import { GridMoreVertIcon } from "@mui/x-data-grid";
@@ -176,6 +176,7 @@ const Invoice = () => {
                                                     <strong>Send Invoice</strong>
                                                 </MenuItem>
                                                 <MenuItem onClick={() => {
+                                                    dispatch(downloadCustomerInvoice(selectedItem.customerId))
                                                     handleClose();
                                                 }}>
                                                     <strong>Download Invoice</strong>

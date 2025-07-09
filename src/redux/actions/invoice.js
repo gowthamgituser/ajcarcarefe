@@ -76,3 +76,34 @@ export const fetchInvoice = createAsyncThunk(
     }
   );
   
+  export const downloadCustomerInvoice = createAsyncThunk(
+    'invoice/downloadCustomerInvoice',
+    async (id , { rejectWithValue }) => {
+      try {
+        const response = await API.get(`invoice/pdf/${id}`, {
+          responseType: 'blob', 
+        });
+  
+
+        const blob = new Blob([response.data], { type: 'application/pdf' });
+  
+    
+        const url = window.URL.createObjectURL(blob);
+  
+    
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `Invoice-${id}.pdf`);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
+        toast.success('Invoice downloaded');
+      } catch (error) {
+        const message =
+          error.response?.data?.error || error.message || 'Something went wrong';
+        return rejectWithValue(message);
+      }
+    }
+  );
+  
