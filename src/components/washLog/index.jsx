@@ -54,64 +54,98 @@ const WashLogs = () => {
 
     const handleSearch = () => {
         const formattedStartDate = formatDate(startDate);
-            const formattedEndDate = formatDate(endDate);
+        const formattedEndDate = formatDate(endDate);
 
-            dispatch(fetchWashLogByApartment({
-                id,
-                startDate: formattedStartDate,
-                endDate: formattedEndDate
-            }));
+        dispatch(fetchWashLogByApartment({
+            id,
+            startDate: formattedStartDate,
+            endDate: formattedEndDate
+        }));
     };
 
     return (
         <>
             {/* Main Content */}
             <Box sx={{ p: 2 }}>
-                <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-                    <Typography variant="h5">Wash Logs</Typography>
-                    <Box gap={2} style={{
-                        display: 'flex', justifyContent: 'space-between', alignItems: 'center'
-                    }}>
-                        <Box>
-                            <Button
-                                variant="contained"
-                                onClick={() => setShowModal({
-                                    open: true, data: {
-                                        apartmentId: id
-                                    }
-                                })}
-                            >
-                                Add Wash
-                            </Button>
-                        </Box>
-                        <Box >
+                <Box sx={{ mb: 2 }}>
+                    <Typography variant="h5" sx={{ mb: 2 }}>
+                        Wash Logs
+                    </Typography>
+
+                    <Box
+                        sx={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            gap: 2,
+                        }}
+                    >
+                        {/* Left Section */}
+                        <Button
+                            variant="contained"
+                            onClick={() =>
+                                setShowModal({
+                                    open: true,
+                                    data: { apartmentId: id },
+                                })
+                            }
+                            sx={{ minWidth: 120 }}
+                        >
+                            Add Wash
+                        </Button>
+
+                        {/* Right Section */}
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                flexWrap: "wrap",
+                                gap: 2,
+                            }}
+                        >
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <DatePicker
-                                    label={'Start Date'}
+                                    label="Start Date"
                                     value={startDate}
                                     onChange={(newValue) => setStartDate(newValue)}
+                                    slotProps={{
+                                        textField: {
+                                            size: "small",
+                                            sx: { minWidth: 150 },
+                                        },
+                                    }}
                                 />
                             </LocalizationProvider>
-                        </Box>
-                        <Box>
+
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <DatePicker
-                                    label={'End Date'}
+                                    label="End Date"
                                     value={endDate}
                                     onChange={(newValue) => setEndDate(newValue)}
+                                    slotProps={{
+                                        textField: {
+                                            size: "small",
+                                            sx: { minWidth: 150 },
+                                        },
+                                    }}
                                 />
                             </LocalizationProvider>
-                        </Box>
-                        <Box>
-                        <IconButton onClick={() => {
-                            handleSearch();
-                        }}>
-                            <Search/>
-                        </IconButton>
+
+                            <IconButton
+                                onClick={handleSearch}
+                                sx={{
+                                    border: "1px solid #ccc",
+                                    borderRadius: 1,
+                                    p: 1,
+                                }}
+                            >
+                                <Search />
+                            </IconButton>
                         </Box>
                     </Box>
-
                 </Box>
+
 
                 <TableContainer component={Paper} elevation={3}>
                     <Table>
@@ -230,7 +264,7 @@ const WashLogs = () => {
                             apartmentId: deleteLog.apartmentId,
                             _id: deleteLog._id
                         };
-                        dispatch(deleteWashLog({postBody: postBody, startDate, endDate}));
+                        dispatch(deleteWashLog({ postBody: postBody, startDate, endDate }));
                         setShowDeleteModal(false);
                         setDeleteLog({});
                     }}

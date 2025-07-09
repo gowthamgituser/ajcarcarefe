@@ -77,18 +77,35 @@ const Invoice = () => {
     return (
         <>
             <Box sx={{ p: 2 }}>
-                <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2, alignItems: 'center' }}>
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        mb: 2,
+                        flexWrap: "wrap",
+                        gap: 2,
+                    }}
+                >
                     <Typography variant="h5">Invoices</Typography>
-                    <Box>
+
+                    <Box sx={{ minWidth: 200 }}>
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DatePicker
-                                views={['year', 'month']}
+                                views={["year", "month"]}
                                 value={selectedDate}
                                 onChange={(newValue) => setSelectedDate(newValue)}
+                                slotProps={{
+                                    textField: {
+                                        size: "small",
+                                        fullWidth: true,
+                                    },
+                                }}
                             />
                         </LocalizationProvider>
                     </Box>
                 </Box>
+
 
                 <TableContainer component={Paper} elevation={3}>
                     <Table>
@@ -120,7 +137,7 @@ const Invoice = () => {
                                         <TableCell>{item.phone}</TableCell>
                                         <TableCell>{`₹${item.amount.toLocaleString('en-IN')}`}</TableCell>
                                         <TableCell>
-                                        <Tooltip title={item.statusNotes || ''}><Box className='invoice-box' style={{ backgroundColor: item.paymentStatus === 'paid' ? 'lightgreen' : '#FFCCCB', color: item.paymentStatus === 'paid' ? 'green' : 'red' }}>
+                                            <Tooltip title={item.statusNotes || ''}><Box className='invoice-box' style={{ backgroundColor: item.paymentStatus === 'paid' ? 'lightgreen' : '#FFCCCB', color: item.paymentStatus === 'paid' ? 'green' : 'red' }}>
                                                 {item.paymentStatus?.toUpperCase()}
                                             </Box></Tooltip>
 
