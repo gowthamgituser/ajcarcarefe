@@ -23,6 +23,9 @@ import { fetchCustomer } from '../../redux/actions/customers';
 import { fetchVehiclesByApartment } from '../../redux/actions/vehicles';
 import { fetchSubscription, fetchSubscriptionByVehicle } from '../../redux/actions/subscription';
 import { addWashLog } from '../../redux/actions/washLog';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 const style = {
     position: 'absolute',
@@ -54,7 +57,9 @@ const AddWashLogs = ({ open, handleClose, data, editModal, startDate, endDate })
     const [type, setType] = useState('');
     const [additionalCharge, setAdditionalCharge] = useState('');
     const [description, setDescription] = useState('');
-    console.log(vehicle_apartmentList);
+    const [washDate, setWashDate] = useState(new Date());
+
+
     useEffect(() => {
         if (data?.apartmentId) {
             dispatch(fetchCustomer(data?.apartmentId))
@@ -130,10 +135,11 @@ const AddWashLogs = ({ open, handleClose, data, editModal, startDate, endDate })
             vehicleId: vehcileId || washType || null,
             isAdditional,
             additionalCharge: isAdditional ? Number(additionalCharge) : 0,
-            description: description
+            description: description,
+            createdAt: washDate
         };
 
-        dispatch(addWashLog({postBody: postBody, startDate, endDate}));
+        dispatch(addWashLog({ postBody: postBody, startDate, endDate }));
         handleClose();
     };
 
@@ -164,7 +170,7 @@ const AddWashLogs = ({ open, handleClose, data, editModal, startDate, endDate })
                             freeSolo
                             options={vehicle_apartmentList}
                             getOptionLabel={(option) =>
-                                typeof option === 'string' ? option : (option.model + ' -' || '-') + '' +  option.vehicleNumber + '-' + (option?.customerId?.name || '')
+                                typeof option === 'string' ? option : (option.model + ' -' || '-') + '' + option.vehicleNumber + '-' + (option?.customerId?.name || '')
                             }
                             value={washType}
                             onChange={handleVehicleChange}
@@ -282,6 +288,17 @@ const AddWashLogs = ({ open, handleClose, data, editModal, startDate, endDate })
                         />
 
                     </Grid>}
+
+                    <Grid item xs={12} sm={6} mt={2}>
+                        <Typography fontWeight={500}>Wash Date</Typography>
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DatePicker
+                                value={washDate}
+                                onChange={(newValue) => setWashDate(newValue)}
+                                slotProps={{ textField: { size: 'small', fullWidth: true } }}
+                            />
+                        </LocalizationProvider>
+                    </Grid>
                 </Grid>
                 <Grid container alignItems="center" mt={2}>
                     <Grid item xs={12} sx={{
