@@ -4,6 +4,7 @@ import Dashboard from './components/dashboard/dashboard';
 import { Provider } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import Apartment from './components/apartment';
+import CustomerDashboard from './components/customerDashboard';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
               }
             />
             <Route path="/apartment/:id" element={<Apartment/>} />
+            <Route path="/customer" element={<CustomerDashboard/>} />
           </Routes>
           <ToastContainer
           position="bottom-center"

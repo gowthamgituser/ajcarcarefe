@@ -159,7 +159,7 @@ const SubscriptionModal = ({ open, handleClose, customerDetails }) => {
                                             <TableCell>
                                                 <FormControl sx={{ width: '250px' }} size="small">
                                                     <Select
-                                                        disabled={sub?.washesUsed?.foam !== 0 && sub?.washesUsed?.normal !== 0 && !sub?.isNewRow}
+                                                        disabled={(sub?.washesUsed?.foam !== 0 || sub?.washesUsed?.normal !== 0) && (!sub?.isNewRow)}
                                                         value={sub.planId}
                                                         onChange={(e) => handleChange(index, 'planId', e.target.value)}
                                                     >
@@ -224,7 +224,7 @@ const SubscriptionModal = ({ open, handleClose, customerDetails }) => {
                                                 <IconButton color="primary" onClick={() => handleSave(sub)}>
                                                     <SaveOutlined />
                                                 </IconButton>
-                                                <IconButton disabled={sub?.washesUsed?.foam !== 0 && sub?.washesUsed?.normal !== 0 && !sub?.isNewRow} color="error" onClick={() => handleDelete(index, sub)}>
+                                                <IconButton disabled={(sub?.washesUsed?.foam !== 0 || sub?.washesUsed?.normal !== 0) && (!sub?.isNewRow)} color="error" onClick={() => handleDelete(index, sub)}>
                                                     <DeleteOutline />
                                                 </IconButton>
                                             </TableCell>
