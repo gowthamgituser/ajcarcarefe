@@ -78,9 +78,14 @@ export const fetchInvoice = createAsyncThunk(
   
   export const downloadCustomerInvoice = createAsyncThunk(
     'invoice/downloadCustomerInvoice',
-    async (id , { rejectWithValue }) => {
+    async ({month, year, id} , { rejectWithValue }) => {
+    
       try {
         const response = await API.get(`invoice/pdf/${id}`, {
+          params: {
+            month,
+            year
+        },
           responseType: 'blob', 
         });
   

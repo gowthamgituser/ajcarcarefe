@@ -176,7 +176,7 @@ const Invoice = () => {
                                                     <strong>Send Invoice</strong>
                                                 </MenuItem>
                                                 <MenuItem onClick={() => {
-                                                    dispatch(downloadCustomerInvoice(selectedItem.customerId))
+                                                    dispatch(downloadCustomerInvoice({month: selectedItem.month, year: selectedItem.year, id: selectedItem.customerId}));
                                                     handleClose();
                                                 }}>
                                                     <strong>Download Invoice</strong>
